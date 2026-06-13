@@ -33,7 +33,7 @@ public class OutboxStateService {
         @SuppressWarnings("unchecked")
         List<Number> ids = entityManager.createNativeQuery("""
                         SELECT id
-                        FROM EVENT_OUTBOX
+                        FROM event_outbox
                         WHERE status = 'PENDING'
                         ORDER BY created_at
                         LIMIT :limit

@@ -39,6 +39,7 @@ import static org.awaitility.Awaitility.await;
         "spring.cloud.config.enabled=false",
         "spring.cloud.discovery.enabled=false",
         "eureka.client.enabled=false",
+        "kafka.enabled=true",
         "spring.jpa.hibernate.ddl-auto=create-drop",
         "outbox.publisher.fixed-delay-ms=200",
         "outbox.publisher.ack-timeout-seconds=30"
@@ -83,7 +84,7 @@ class OutboxPublisherKafkaIntegrationTest {
         EventOutboxEntity event = event("ride-flow", OffsetDateTime.parse("2026-06-13T10:00:00Z"));
         eventOutboxRepository.save(event);
 
-        ConsumerRecord<String, String> record = consumeOneEvent();
+        ConsumerRecord<String, String> record = consumeOneEvent("ride-flow");
 
         assertThat(record.key()).isEqualTo("ride-flow");
         assertThat(record.headers().lastHeader("eventId")).isNotNull();
@@ -142,7 +143,7 @@ class OutboxPublisherKafkaIntegrationTest {
         eventOutboxRepository.save(event("ride-order", now));
         eventOutboxRepository.save(event("ride-order", now.plusSeconds(1)));
 
-        List<ConsumerRecord<String, String>> records = consumeEvents(2);
+        List<ConsumerRecord<String, String>> records = consumeEvents("ride-order", 2);
 
         assertThat(records).extracting(ConsumerRecord::key).containsExactly("ride-order", "ride-order");
         assertThat(records.get(0).value()).contains("\"eventTimestamp\":\"2026-06-13T10:00:00Z\"");
@@ -150,19 +151,21 @@ class OutboxPublisherKafkaIntegrationTest {
         assertThat(records.get(0).partition()).isEqualTo(records.get(1).partition());
     }
 
-    private ConsumerRecord<String, String> consumeOneEvent() {
-        return consumeEvents(1).getFirst();
+    private ConsumerRecord<String, String> consumeOneEvent(String expectedKey) {
+        return consumeEvents(expectedKey, 1).getFirst();
     }
 
-    private List<ConsumerRecord<String, String>> consumeEvents(int expectedCount) {
+    private List<ConsumerRecord<String, String>> consumeEvents(String expectedKey, int expectedCount) {
         try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProperties())) {
             consumer.subscribe(List.of(properties.eventTopic()));
             java.util.ArrayList<ConsumerRecord<String, String>> records = new java.util.ArrayList<>();
             long deadline = System.nanoTime() + Duration.ofSeconds(15).toNanos();
             while (records.size() < expectedCount && System.nanoTime() < deadline) {
-                consumer.poll(Duration.ofMillis(500))
-                        .records(properties.eventTopic())
-                        .forEach(records::add);
+                for (ConsumerRecord<String, String> record : consumer.poll(Duration.ofMillis(500)).records(properties.eventTopic())) {
+                    if (expectedKey.equals(record.key())) {
+                        records.add(record);
+                    }
+                }
             }
             assertThat(records).hasSizeGreaterThanOrEqualTo(expectedCount);
             return records.stream().limit(expectedCount).toList();
