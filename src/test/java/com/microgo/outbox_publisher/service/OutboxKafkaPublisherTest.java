@@ -5,6 +5,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.microgo.outbox_publisher.configuration.OutboxPublisherProperties;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 import com.microgo.outbox_publisher.enums.OutboxEventStatus;
+import com.microgo.outbox_publisher.service.serviceimpl.OutboxEventEnvelopeFactoryImpl;
+import com.microgo.outbox_publisher.service.serviceimpl.OutboxEventPublisherImpl;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,7 +22,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class OutboxKafkaPublisherTest {
+class OutboxEventPublisherImplTest {
 
     @Test
     void sendsEnvelopeWithKeyAndHeaders() throws Exception {
@@ -29,10 +31,10 @@ class OutboxKafkaPublisherTest {
         ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
         OutboxPublisherProperties properties = new OutboxPublisherProperties(
                 "ride.request.events", "ride.request.events.acks", 3, 3, (short) 1, 50, 1000L, 30L, 10);
-        OutboxKafkaPublisher publisher = new OutboxKafkaPublisher(
+        OutboxEventPublisherImpl publisher = new OutboxEventPublisherImpl(
                 kafkaTemplate,
                 properties,
-                new OutboxEventEnvelopeBuilder(objectMapper)
+                new OutboxEventEnvelopeFactoryImpl(objectMapper)
         );
         ArgumentCaptor<ProducerRecord<String, String>> recordCaptor = ArgumentCaptor.forClass(ProducerRecord.class);
         CompletableFuture<SendResult<String, String>> future = CompletableFuture.completedFuture(mock(SendResult.class));

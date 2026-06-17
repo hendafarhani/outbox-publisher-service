@@ -1,5 +1,6 @@
-package com.microgo.outbox_publisher.configuration;
+package com.microgo.outbox_publisher.kafka.configuration;
 
+import com.microgo.outbox_publisher.configuration.OutboxPublisherProperties;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -28,7 +29,7 @@ public class KafkaConfiguration {
 
     @Bean
     public KafkaAdmin kafkaAdmin(@Value("${kafka.bootstrap-servers}") String bootstrapServers) {
-        return new KafkaAdmin(Map.of(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers));
+        return new KafkaAdmin(bootstrapServerConfig(bootstrapServers));
     }
 
     @Bean
@@ -43,11 +44,7 @@ public class KafkaConfiguration {
 
     @Bean
     public ProducerFactory<String, String> outboxProducerFactory(@Value("${kafka.bootstrap-servers}") String bootstrapServers) {
-        Map<String, Object> config = new HashMap<>();
-        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-        return new DefaultKafkaProducerFactory<>(config);
+        return new DefaultKafkaProducerFactory<>(producerConfig(bootstrapServers));
     }
 
     @Bean
@@ -57,11 +54,7 @@ public class KafkaConfiguration {
 
     @Bean
     public ConsumerFactory<String, String> outboxAckConsumerFactory(@Value("${kafka.bootstrap-servers}") String bootstrapServers) {
-        Map<String, Object> config = new HashMap<>();
-        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        return new DefaultKafkaConsumerFactory<>(config);
+        return new DefaultKafkaConsumerFactory<>(consumerConfig(bootstrapServers));
     }
 
     @Bean
@@ -70,5 +63,25 @@ public class KafkaConfiguration {
         ConcurrentKafkaListenerContainerFactory<String, String> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(outboxAckConsumerFactory);
         return factory;
+    }
+
+    private Map<String, Object> producerConfig(String bootstrapServers) {
+        Map<String, Object> config = new HashMap<>();
+        config.putAll(bootstrapServerConfig(bootstrapServers));
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        return config;
+    }
+
+    private Map<String, Object> consumerConfig(String bootstrapServers) {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        return config;
+    }
+
+    private Map<String, Object> bootstrapServerConfig(String bootstrapServers) {
+        return Map.of(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
     }
 }

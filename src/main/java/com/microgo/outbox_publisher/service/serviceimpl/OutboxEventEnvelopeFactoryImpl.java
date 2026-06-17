@@ -1,21 +1,27 @@
-package com.microgo.outbox_publisher.service;
+package com.microgo.outbox_publisher.service.serviceimpl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 import com.microgo.outbox_publisher.model.OutboxEventEnvelope;
+import com.microgo.outbox_publisher.service.OutboxEventEnvelopeFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class OutboxEventEnvelopeBuilder {
+public class OutboxEventEnvelopeFactoryImpl implements OutboxEventEnvelopeFactory {
 
     private final ObjectMapper objectMapper;
 
+    @Override
     public OutboxEventEnvelope build(EventOutboxEntity event) {
         JsonNode payload = readPayload(event);
+        return buildEnvelope(event, payload);
+    }
+
+    private OutboxEventEnvelope buildEnvelope(EventOutboxEntity event, JsonNode payload) {
         return new OutboxEventEnvelope(
                 event.getId(),
                 event.getEventType(),
@@ -23,11 +29,12 @@ public class OutboxEventEnvelopeBuilder {
                 event.getRideRequestIdentifier(),
                 event.getRequesterId(),
                 event.getRiderId(),
-                payload.path("rideStatus").isMissingNode() ? null : payload.path("rideStatus").asText(null),
+                rideStatusFrom(payload),
                 payload
         );
     }
 
+    @Override
     public String toJson(OutboxEventEnvelope envelope) {
         try {
             return objectMapper.writeValueAsString(envelope);
@@ -42,5 +49,10 @@ public class OutboxEventEnvelopeBuilder {
         } catch (JsonProcessingException ex) {
             throw new IllegalStateException("Unable to parse outbox payload " + event.getId(), ex);
         }
+    }
+
+    private String rideStatusFrom(JsonNode payload) {
+        JsonNode rideStatus = payload.path("rideStatus");
+        return rideStatus.isMissingNode() ? null : rideStatus.asText(null);
     }
 }

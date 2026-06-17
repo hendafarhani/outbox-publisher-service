@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-public interface EventOutboxRepository extends JpaRepository<EventOutboxEntity, Long> {
+public interface EventOutboxRepository extends JpaRepository<EventOutboxEntity, Long>, EventOutboxClaimRepository {
 
     List<EventOutboxEntity> findByStatusAndUpdatedAtBeforeOrderByUpdatedAtAsc(OutboxEventStatus status, OffsetDateTime updatedBefore);
 }
