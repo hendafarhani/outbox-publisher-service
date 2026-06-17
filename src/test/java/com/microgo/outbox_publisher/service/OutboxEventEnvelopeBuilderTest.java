@@ -5,16 +5,17 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 import com.microgo.outbox_publisher.enums.OutboxEventStatus;
 import com.microgo.outbox_publisher.model.OutboxEventEnvelope;
+import com.microgo.outbox_publisher.service.serviceimpl.OutboxEventEnvelopeFactoryImpl;
 import org.junit.jupiter.api.Test;
 
 import java.time.OffsetDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class OutboxEventEnvelopeBuilderTest {
+class OutboxEventEnvelopeFactoryImplTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
-    private final OutboxEventEnvelopeBuilder builder = new OutboxEventEnvelopeBuilder(objectMapper);
+    private final OutboxEventEnvelopeFactoryImpl builder = new OutboxEventEnvelopeFactoryImpl(objectMapper);
 
     @Test
     void buildsEnvelopeWithDeliveryMetadataAndNestedPayload() throws Exception {

@@ -4,7 +4,7 @@ import com.microgo.outbox_publisher.configuration.OutboxPublisherProperties;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 import com.microgo.outbox_publisher.enums.OutboxEventStatus;
 import com.microgo.outbox_publisher.repository.EventOutboxRepository;
-import jakarta.persistence.EntityManager;
+import com.microgo.outbox_publisher.service.serviceimpl.OutboxStateManagerImpl;
 import org.junit.jupiter.api.Test;
 
 import java.time.OffsetDateTime;
@@ -18,14 +18,28 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class OutboxStateServiceTest {
+class OutboxStateManagerImplTest {
 
     private final EventOutboxRepository repository = mock(EventOutboxRepository.class);
-    private final OutboxStateService service = new OutboxStateService(
+    private final OutboxStateManagerImpl service = new OutboxStateManagerImpl(
             repository,
-            mock(EntityManager.class),
             new OutboxPublisherProperties(null, null, null, null, null, 50, null, 30L, 10)
     );
+
+    @Test
+    void claimPendingEventsDelegatesClaimingToRepositoryAndMarksEventsProcessing() {
+        EventOutboxEntity event = event(OutboxEventStatus.PENDING);
+        when(repository.claimPendingEventIds(50)).thenReturn(List.of(123L));
+        when(repository.findAllById(List.of(123L))).thenReturn(List.of(event));
+        when(repository.saveAll(List.of(event))).thenReturn(List.of(event));
+
+        List<EventOutboxEntity> result = service.claimPendingEvents();
+
+        assertThat(result).containsExactly(event);
+        assertThat(event.getStatus()).isEqualTo(OutboxEventStatus.PROCESSING);
+        assertThat(event.getLastError()).isNull();
+        verify(repository).claimPendingEventIds(50);
+    }
 
     @Test
     void markPublishedTransitionsOnlyProcessingEvents() {

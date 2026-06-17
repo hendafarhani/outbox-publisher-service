@@ -16,8 +16,6 @@ public record OutboxPublisherProperties(
 ) {
 
     public OutboxPublisherProperties {
-        eventTopic = eventTopic == null ? "ride.request.events" : eventTopic;
-        ackTopic = ackTopic == null ? "ride.request.events.acks" : ackTopic;
         eventTopicPartitions = eventTopicPartitions == null ? 3 : eventTopicPartitions;
         ackTopicPartitions = ackTopicPartitions == null ? 3 : ackTopicPartitions;
         replicationFactor = replicationFactor == null ? 1 : replicationFactor;
