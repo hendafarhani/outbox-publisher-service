@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
-import com.microgo.outbox_publisher.model.OutboxEventEnvelope;
+import com.microgo.outbox_publisher.domain.OutboxEventEnvelope;
 import com.microgo.outbox_publisher.service.OutboxEventEnvelopeFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

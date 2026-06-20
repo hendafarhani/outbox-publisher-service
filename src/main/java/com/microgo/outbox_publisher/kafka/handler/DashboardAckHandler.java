@@ -2,11 +2,10 @@ package com.microgo.outbox_publisher.kafka.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.microgo.outbox_publisher.model.DashboardAckMessage;
+import com.microgo.outbox_publisher.domain.DashboardAckMessage;
 import com.microgo.outbox_publisher.service.OutboxStateManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;

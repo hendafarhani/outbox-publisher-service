@@ -1,4 +1,4 @@
-package com.microgo.outbox_publisher.model;
+package com.microgo.outbox_publisher.domain;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

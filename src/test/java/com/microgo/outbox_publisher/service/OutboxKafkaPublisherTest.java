@@ -6,7 +6,7 @@ import com.microgo.outbox_publisher.configuration.OutboxPublisherProperties;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 import com.microgo.outbox_publisher.enums.OutboxEventStatus;
 import com.microgo.outbox_publisher.service.serviceimpl.OutboxEventEnvelopeFactoryImpl;
-import com.microgo.outbox_publisher.service.serviceimpl.OutboxEventPublisherImpl;
+import com.microgo.outbox_publisher.kafka.publisher.impl.OutboxEventPublisherImpl;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;

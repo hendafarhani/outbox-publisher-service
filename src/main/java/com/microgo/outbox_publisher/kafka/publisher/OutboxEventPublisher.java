@@ -1,4 +1,4 @@
-package com.microgo.outbox_publisher.service;
+package com.microgo.outbox_publisher.kafka.publisher;
 
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 
