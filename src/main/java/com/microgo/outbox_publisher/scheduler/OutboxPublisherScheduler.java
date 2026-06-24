@@ -1,7 +1,7 @@
 package com.microgo.outbox_publisher.scheduler;
 
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
-import com.microgo.outbox_publisher.service.OutboxEventPublisher;
+import com.microgo.outbox_publisher.kafka.publisher.OutboxEventPublisher;
 import com.microgo.outbox_publisher.service.OutboxStateManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

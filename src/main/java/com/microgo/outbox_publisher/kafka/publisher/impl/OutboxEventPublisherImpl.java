@@ -1,10 +1,10 @@
-package com.microgo.outbox_publisher.service.serviceimpl;
+package com.microgo.outbox_publisher.kafka.publisher.impl;
 
 import com.microgo.outbox_publisher.configuration.OutboxPublisherProperties;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
-import com.microgo.outbox_publisher.model.OutboxEventEnvelope;
+import com.microgo.outbox_publisher.domain.OutboxEventEnvelope;
 import com.microgo.outbox_publisher.service.OutboxEventEnvelopeFactory;
-import com.microgo.outbox_publisher.service.OutboxEventPublisher;
+import com.microgo.outbox_publisher.kafka.publisher.OutboxEventPublisher;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;

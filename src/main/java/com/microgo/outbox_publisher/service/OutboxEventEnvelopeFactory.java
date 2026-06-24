@@ -1,7 +1,7 @@
 package com.microgo.outbox_publisher.service;
 
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
-import com.microgo.outbox_publisher.model.OutboxEventEnvelope;
+import com.microgo.outbox_publisher.domain.OutboxEventEnvelope;
 
 public interface OutboxEventEnvelopeFactory {
 

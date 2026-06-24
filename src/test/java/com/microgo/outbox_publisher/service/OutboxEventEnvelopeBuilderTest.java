@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 import com.microgo.outbox_publisher.enums.OutboxEventStatus;
-import com.microgo.outbox_publisher.model.OutboxEventEnvelope;
+import com.microgo.outbox_publisher.domain.OutboxEventEnvelope;
 import com.microgo.outbox_publisher.service.serviceimpl.OutboxEventEnvelopeFactoryImpl;
 import org.junit.jupiter.api.Test;
 
