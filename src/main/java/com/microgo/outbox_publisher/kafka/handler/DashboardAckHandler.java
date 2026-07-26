@@ -1,7 +1,7 @@
 package com.microgo.outbox_publisher.kafka.handler;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import com.microgo.outbox_publisher.domain.DashboardAckMessage;
 import com.microgo.outbox_publisher.service.OutboxStateManager;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class DashboardAckHandler {
         }
         try {
             return objectMapper.readValue(message, DashboardAckMessage.class);
-        } catch (JsonProcessingException ex) {
+        } catch (JacksonException ex) {
             log.warn("Ignoring malformed dashboard acknowledgement {}", message, ex);
             return null;
         }

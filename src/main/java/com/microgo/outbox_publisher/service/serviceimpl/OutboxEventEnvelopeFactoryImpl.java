@@ -1,8 +1,8 @@
 package com.microgo.outbox_publisher.service.serviceimpl;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 import com.microgo.outbox_publisher.domain.OutboxEventEnvelope;
 import com.microgo.outbox_publisher.service.OutboxEventEnvelopeFactory;
@@ -38,7 +38,7 @@ public class OutboxEventEnvelopeFactoryImpl implements OutboxEventEnvelopeFactor
     public String toJson(OutboxEventEnvelope envelope) {
         try {
             return objectMapper.writeValueAsString(envelope);
-        } catch (JsonProcessingException ex) {
+        } catch (JacksonException ex) {
             throw new IllegalStateException("Unable to serialize outbox event envelope " + envelope.eventId(), ex);
         }
     }
@@ -46,7 +46,7 @@ public class OutboxEventEnvelopeFactoryImpl implements OutboxEventEnvelopeFactor
     private JsonNode readPayload(EventOutboxEntity event) {
         try {
             return objectMapper.readTree(event.getPayload());
-        } catch (JsonProcessingException ex) {
+        } catch (JacksonException ex) {
             throw new IllegalStateException("Unable to parse outbox payload " + event.getId(), ex);
         }
     }

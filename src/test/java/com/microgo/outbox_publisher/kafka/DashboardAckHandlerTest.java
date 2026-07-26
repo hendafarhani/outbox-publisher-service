@@ -1,7 +1,6 @@
 package com.microgo.outbox_publisher.kafka;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.json.JsonMapper;
 import com.microgo.outbox_publisher.kafka.handler.DashboardAckHandler;
 import com.microgo.outbox_publisher.service.OutboxStateManager;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,7 @@ import static org.mockito.Mockito.verify;
 
 class DashboardAckHandlerTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private final JsonMapper objectMapper = new JsonMapper();
     private final OutboxStateManager outboxStateManager = mock(OutboxStateManager.class);
     private final DashboardAckHandler listener = new DashboardAckHandler(objectMapper, outboxStateManager);
 

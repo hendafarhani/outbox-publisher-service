@@ -1,6 +1,6 @@
 package com.microgo.outbox_publisher.domain;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 
 import java.time.OffsetDateTime;
 
