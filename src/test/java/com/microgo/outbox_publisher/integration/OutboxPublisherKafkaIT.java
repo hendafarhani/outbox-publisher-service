@@ -45,7 +45,7 @@ import static org.awaitility.Awaitility.await;
         "outbox.publisher.ack-timeout-seconds=30"
 })
 @Testcontainers(disabledWithoutDocker = true)
-class OutboxPublisherKafkaIntegrationTest {
+class OutboxPublisherKafkaIT {
 
     @Container
     static MySQLContainer<?> mysql = new MySQLContainer<>("mysql:8.4");
