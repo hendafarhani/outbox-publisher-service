@@ -1,7 +1,6 @@
 package com.microgo.outbox_publisher.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.json.JsonMapper;
 import com.microgo.outbox_publisher.configuration.OutboxPublisherProperties;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 import com.microgo.outbox_publisher.enums.OutboxEventStatus;
@@ -28,7 +27,7 @@ class OutboxEventPublisherImplTest {
     void sendsEnvelopeWithKeyAndHeaders() throws Exception {
         @SuppressWarnings("unchecked")
         KafkaTemplate<String, String> kafkaTemplate = mock(KafkaTemplate.class);
-        ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+        JsonMapper objectMapper = new JsonMapper();
         OutboxPublisherProperties properties = new OutboxPublisherProperties(
                 "ride.request.events", "ride.request.events.acks", 3, 3, (short) 1, 50, 1000L, 30L, 10);
         OutboxEventPublisherImpl publisher = new OutboxEventPublisherImpl(

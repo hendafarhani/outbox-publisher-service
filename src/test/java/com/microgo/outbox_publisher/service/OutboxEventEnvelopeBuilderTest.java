@@ -1,7 +1,6 @@
 package com.microgo.outbox_publisher.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import tools.jackson.databind.json.JsonMapper;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 import com.microgo.outbox_publisher.enums.OutboxEventStatus;
 import com.microgo.outbox_publisher.domain.OutboxEventEnvelope;
@@ -14,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class OutboxEventEnvelopeFactoryImplTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper().registerModule(new JavaTimeModule());
+    private final JsonMapper objectMapper = new JsonMapper();
     private final OutboxEventEnvelopeFactoryImpl builder = new OutboxEventEnvelopeFactoryImpl(objectMapper);
 
     @Test
