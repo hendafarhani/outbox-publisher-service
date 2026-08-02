@@ -23,7 +23,7 @@ class OutboxStateManagerImplTest {
     private final EventOutboxRepository repository = mock(EventOutboxRepository.class);
     private final OutboxStateManagerImpl service = new OutboxStateManagerImpl(
             repository,
-            new OutboxPublisherProperties(null, null, null, null, null, 50, null, 30L, 10)
+            new OutboxPublisherProperties(null, null, null, 50, null, 30L, 10)
     );
 
     @Test

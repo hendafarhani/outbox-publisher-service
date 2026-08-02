@@ -1,6 +1,7 @@
 package com.microgo.outbox_publisher.service;
 
 import tools.jackson.databind.json.JsonMapper;
+import com.microgo.outbox_publisher.configuration.KafkaTopicProperties;
 import com.microgo.outbox_publisher.configuration.OutboxPublisherProperties;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 import com.microgo.outbox_publisher.enums.OutboxEventStatus;
@@ -28,11 +29,11 @@ class OutboxEventPublisherImplTest {
         @SuppressWarnings("unchecked")
         KafkaTemplate<String, String> kafkaTemplate = mock(KafkaTemplate.class);
         JsonMapper objectMapper = new JsonMapper();
-        OutboxPublisherProperties properties = new OutboxPublisherProperties(
-                "ride.request.events", "ride.request.events.acks", 3, 3, (short) 1, 50, 1000L, 30L, 10);
+        OutboxPublisherProperties properties = new OutboxPublisherProperties(3, 3, (short) 1, 50, 1000L, 30L, 10);
+        KafkaTopicProperties topics = new KafkaTopicProperties("ride.request.events", "ride.request.events.acks");
         OutboxEventPublisherImpl publisher = new OutboxEventPublisherImpl(
                 kafkaTemplate,
-                properties,
+                topics,
                 new OutboxEventEnvelopeFactoryImpl(objectMapper)
         );
         ArgumentCaptor<ProducerRecord<String, String>> recordCaptor = ArgumentCaptor.forClass(ProducerRecord.class);
