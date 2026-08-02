@@ -22,7 +22,7 @@ public class DashboardAckHandler {
 
     @KafkaListener(
             id = "${outbox.publisher.ack-listener-id}",
-            topics = "${outbox.publisher.ack-topic}",
+            topics = "${microgo.topics.ride-request-events-acks}",
             groupId = "${outbox.publisher.ack-group-id}",
             containerFactory = "outboxAckKafkaListenerContainerFactory"
     )

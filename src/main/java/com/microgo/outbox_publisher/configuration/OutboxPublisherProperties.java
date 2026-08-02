@@ -2,10 +2,16 @@ package com.microgo.outbox_publisher.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+/**
+ * This service's own Kafka identity and tuning.
+ *
+ * <p>Topic names deliberately live in {@link KafkaTopicProperties} instead.
+ * A topic name is an agreement with dashboard-service on the other end of the
+ * channel; everything here must DIFFER per service, in particular the ack group
+ * id, since Kafka splits a topic between members of one consumer group.
+ */
 @ConfigurationProperties(prefix = "outbox.publisher")
 public record OutboxPublisherProperties(
-        String eventTopic,
-        String ackTopic,
         Integer eventTopicPartitions,
         Integer ackTopicPartitions,
         Short replicationFactor,

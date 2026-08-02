@@ -2,7 +2,7 @@ package com.microgo.outbox_publisher.integration;
 
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
-import com.microgo.outbox_publisher.configuration.OutboxPublisherProperties;
+import com.microgo.outbox_publisher.configuration.KafkaTopicProperties;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 import com.microgo.outbox_publisher.enums.OutboxEventStatus;
 import com.microgo.outbox_publisher.repository.EventOutboxRepository;
@@ -63,7 +63,7 @@ class OutboxPublisherKafkaIT {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private OutboxPublisherProperties properties;
+    private KafkaTopicProperties topics;
 
     @DynamicPropertySource
     static void registerContainerProperties(DynamicPropertyRegistry registry) {
@@ -100,7 +100,7 @@ class OutboxPublisherKafkaIT {
                         .isEqualTo(OutboxEventStatus.PUBLISHED));
 
         kafkaTemplate.send(
-                properties.ackTopic(),
+                topics.rideRequestEventsAcks(),
                 String.valueOf(eventId),
                 """
                 {"eventId":%d,"status":"WEBSOCKET_PUBLISHED","processedAt":"2026-06-13T10:00:03Z","service":"dashboard-service"}
@@ -120,8 +120,8 @@ class OutboxPublisherKafkaIT {
         ))) {
             await().atMost(Duration.ofSeconds(10)).untilAsserted(() -> {
                 Map<String, Integer> partitions = adminClient.describeTopics(List.of(
-                                properties.eventTopic(),
-                                properties.ackTopic()
+                                topics.rideRequestEvents(),
+                                topics.rideRequestEventsAcks()
                         ))
                         .allTopicNames()
                         .get()
@@ -131,8 +131,8 @@ class OutboxPublisherKafkaIT {
                                 Map.Entry::getKey,
                                 entry -> entry.getValue().partitions().size()
                         ));
-                assertThat(partitions.get(properties.eventTopic())).isEqualTo(3);
-                assertThat(partitions.get(properties.ackTopic())).isEqualTo(3);
+                assertThat(partitions.get(topics.rideRequestEvents())).isEqualTo(3);
+                assertThat(partitions.get(topics.rideRequestEventsAcks())).isEqualTo(3);
             });
         }
     }
@@ -157,11 +157,11 @@ class OutboxPublisherKafkaIT {
 
     private List<ConsumerRecord<String, String>> consumeEvents(String expectedKey, int expectedCount) {
         try (KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProperties())) {
-            consumer.subscribe(List.of(properties.eventTopic()));
+            consumer.subscribe(List.of(topics.rideRequestEvents()));
             java.util.ArrayList<ConsumerRecord<String, String>> records = new java.util.ArrayList<>();
             long deadline = System.nanoTime() + Duration.ofSeconds(15).toNanos();
             while (records.size() < expectedCount && System.nanoTime() < deadline) {
-                for (ConsumerRecord<String, String> record : consumer.poll(Duration.ofMillis(500)).records(properties.eventTopic())) {
+                for (ConsumerRecord<String, String> record : consumer.poll(Duration.ofMillis(500)).records(topics.rideRequestEvents())) {
                     if (expectedKey.equals(record.key())) {
                         records.add(record);
                     }

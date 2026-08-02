@@ -1,6 +1,6 @@
 package com.microgo.outbox_publisher.kafka.publisher.impl;
 
-import com.microgo.outbox_publisher.configuration.OutboxPublisherProperties;
+import com.microgo.outbox_publisher.configuration.KafkaTopicProperties;
 import com.microgo.outbox_publisher.entity.EventOutboxEntity;
 import com.microgo.outbox_publisher.domain.OutboxEventEnvelope;
 import com.microgo.outbox_publisher.service.OutboxEventEnvelopeFactory;
@@ -22,7 +22,7 @@ public class OutboxEventPublisherImpl implements OutboxEventPublisher {
     private static final int SEND_TIMEOUT_SECONDS = 10;
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final OutboxPublisherProperties properties;
+    private final KafkaTopicProperties topics;
     private final OutboxEventEnvelopeFactory envelopeFactory;
 
     @Override
@@ -56,7 +56,7 @@ public class OutboxEventPublisherImpl implements OutboxEventPublisher {
     }
 
     private String eventTopic() {
-        return properties.eventTopic();
+        return topics.rideRequestEvents();
     }
 
     private String messageBodyFor(OutboxEventEnvelope envelope) {

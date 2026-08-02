@@ -1,5 +1,6 @@
 package com.microgo.outbox_publisher.kafka.configuration;
 
+import com.microgo.outbox_publisher.configuration.KafkaTopicProperties;
 import com.microgo.outbox_publisher.configuration.OutboxPublisherProperties;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -33,13 +34,13 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    public NewTopic outboxEventsTopic(OutboxPublisherProperties properties) {
-        return new NewTopic(properties.eventTopic(), properties.eventTopicPartitions(), properties.replicationFactor());
+    public NewTopic outboxEventsTopic(KafkaTopicProperties topics, OutboxPublisherProperties properties) {
+        return new NewTopic(topics.rideRequestEvents(), properties.eventTopicPartitions(), properties.replicationFactor());
     }
 
     @Bean
-    public NewTopic outboxEventsAckTopic(OutboxPublisherProperties properties) {
-        return new NewTopic(properties.ackTopic(), properties.ackTopicPartitions(), properties.replicationFactor());
+    public NewTopic outboxEventsAckTopic(KafkaTopicProperties topics, OutboxPublisherProperties properties) {
+        return new NewTopic(topics.rideRequestEventsAcks(), properties.ackTopicPartitions(), properties.replicationFactor());
     }
 
     @Bean
